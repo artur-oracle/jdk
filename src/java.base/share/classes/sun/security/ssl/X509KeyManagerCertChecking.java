@@ -201,17 +201,8 @@ abstract class X509KeyManagerCertChecking extends X509ExtendedKeyManager {
             return null;
         }
 
-        if (engine != null) {
-            SSLSession session = engine.getHandshakeSession();
-            if (session instanceof ExtendedSSLSession extSession) {
-                // QUIC TLS version is mandated to be always TLSv1.3
-                String[] peerSupportedSignAlgs =
-                        extSession.getPeerSupportedSignatureAlgorithms();
-                return SSLAlgorithmConstraints.forQUIC(engine,
-                        peerSupportedSignAlgs, true);
-            }
-        }
-        return SSLAlgorithmConstraints.forQUIC(engine, true);
+        return SSLAlgorithmConstraints.forQUIC(
+                engine, SIGNATURE_CONSTRAINTS_MODE.PEER, true);
     }
 
     // Algorithm constraints check.

@@ -29,7 +29,6 @@ import java.security.AlgorithmConstraints;
 import java.security.AlgorithmParameters;
 import java.security.CryptoPrimitive;
 import java.security.Key;
-import java.util.Objects;
 import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.PSSParameterSpec;
 import java.util.ArrayList;
@@ -169,41 +168,28 @@ final class SSLAlgorithmConstraints implements AlgorithmConstraints {
      * Returns an {@link AlgorithmConstraints} instance that uses the
      * constraints configured for the given {@code engine} in addition
      * to the platform configured constraints.
-     *
-     * @param engine QuicTLSEngine used to determine the constraints
-     * @param withDefaultCertPathConstraints whether or not to apply the
-     *                                       default certpath algorithm constraints too
-     * @return a AlgorithmConstraints instance
-     */
-    static AlgorithmConstraints forQUIC(QuicTLSEngine engine,
-                                        boolean withDefaultCertPathConstraints) {
-        final AlgorithmConstraints userSpecifiedConstraints =
-                getUserSpecifiedConstraints(engine);
-        return wrap(userSpecifiedConstraints, withDefaultCertPathConstraints);
-    }
-
-    /**
-     * Returns an {@link AlgorithmConstraints} instance that uses the
-     * constraints configured for the given {@code engine} in addition
-     * to the platform configured constraints.
      * <p>
      * If the given {@code allowedAlgorithms} is non-null then the returned
      * {@code AlgorithmConstraints} will only permit those allowed algorithms.
      *
      * @param engine QuicTLSEngine used to determine the constraints
-     * @param supportedAlgorithms the algorithms that are supported. can be null.
+     * @param mode SIGNATURE_CONSTRAINTS_MODE
      * @param withDefaultCertPathConstraints whether or not to apply the default certpath
      *                                       algorithm constraints too
      * @return a AlgorithmConstraints instance
      */
     static AlgorithmConstraints forQUIC(QuicTLSEngine engine,
-                                        String[] supportedAlgorithms,
-                                        boolean withDefaultCertPathConstraints) {
-        final AlgorithmConstraints userSpecifiedConstraints =
-                getUserSpecifiedConstraints(engine);
+            SIGNATURE_CONSTRAINTS_MODE mode,
+            boolean withDefaultCertPathConstraints) {
+
+        if (engine == null) {
+            return wrap(null, withDefaultCertPathConstraints);
+        }
+
         return new SSLAlgorithmConstraints(
-                nullIfDefault(userSpecifiedConstraints),
-                new SupportedSignatureAlgorithmConstraints(supportedAlgorithms),
+                nullIfDefault(getUserSpecifiedConstraints(engine)),
+                new SupportedSignatureAlgorithmConstraints(
+                        engine.getHandshakeSession(), mode),
                 withDefaultCertPathConstraints);
     }
 
