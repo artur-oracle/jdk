@@ -110,11 +110,11 @@ public abstract class SSLContextImpl extends SSLContextSpi {
          * first connection to time out and fail. Make sure it is
          * primed and ready by getting some initial output from it.
          */
-        if (SSLLogger.isOn() && SSLLogger.isOn("ssl,sslctx")) {
+        if (SSLLogger.isOn() && SSLLogger.isOn(SSLLogger.Opt.SSLCTX)) {
             SSLLogger.finest("trigger seeding of SecureRandom");
         }
         secureRandom.nextInt();
-        if (SSLLogger.isOn() && SSLLogger.isOn("ssl,sslctx")) {
+        if (SSLLogger.isOn() && SSLLogger.isOn(SSLLogger.Opt.SSLCTX)) {
             SSLLogger.finest("done seeding of SecureRandom");
         }
 
@@ -149,7 +149,7 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                 return (X509ExtendedKeyManager)km;
             }
 
-            if (SSLLogger.isOn() && SSLLogger.isOn("ssl,sslctx")) {
+            if (SSLLogger.isOn() && SSLLogger.isOn(SSLLogger.Opt.SSLCTX)) {
                 SSLLogger.warning(
                     "X509KeyManager passed to SSLContext.init():  need an " +
                     "X509ExtendedKeyManager for SSLEngine use");
@@ -256,7 +256,8 @@ public abstract class SSLContextImpl extends SSLContextSpi {
             contextLock.lock();
             try {
                 if (statusResponseManager == null) {
-                    if (SSLLogger.isOn() && SSLLogger.isOn("ssl,sslctx")) {
+                    if (SSLLogger.isOn() &&
+                            SSLLogger.isOn(SSLLogger.Opt.SSLCTX)) {
                         SSLLogger.finest(
                                 "Initializing StatusResponseManager");
                     }
@@ -394,7 +395,7 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                         suites.add(suite);
                         isSupported = true;
                     } else if (SSLLogger.isOn() &&
-                            SSLLogger.isOn("ssl,sslctx,verbose")) {
+                            SSLLogger.isOn(SSLLogger.Opt.HANDSHAKE)) {
                         SSLLogger.fine(
                                 "Ignore disabled cipher suite: " + suite.name);
                     }
@@ -403,7 +404,7 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                 }
 
                 if (!isSupported && SSLLogger.isOn() &&
-                        SSLLogger.isOn("ssl,sslctx,verbose")) {
+                        SSLLogger.isOn(SSLLogger.Opt.HANDSHAKE)) {
                     SSLLogger.finest(
                             "Ignore unsupported cipher suite: " + suite);
                 }
@@ -420,7 +421,7 @@ public abstract class SSLContextImpl extends SSLContextSpi {
             String propertyName) {
 
         String property = System.getProperty(propertyName);
-        if (SSLLogger.isOn() && SSLLogger.isOn("ssl,sslctx")) {
+        if (SSLLogger.isOn() && SSLLogger.isOn(SSLLogger.Opt.SSLCTX)) {
             SSLLogger.fine(
                     "System property " + propertyName + " is set to '" +
                     property + "'");
@@ -447,7 +448,8 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                 try {
                     suite = CipherSuite.nameOf(cipherSuiteNames[i]);
                 } catch (IllegalArgumentException iae) {
-                    if (SSLLogger.isOn() && SSLLogger.isOn("ssl,sslctx")) {
+                    if (SSLLogger.isOn() &&
+                            SSLLogger.isOn(SSLLogger.Opt.SSLCTX)) {
                         SSLLogger.fine(
                                 "Unknown or unsupported cipher suite name: " +
                                 cipherSuiteNames[i]);
@@ -459,7 +461,8 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                 if (suite != null && suite.isAvailable()) {
                     cipherSuites.add(suite);
                 } else {
-                    if (SSLLogger.isOn() && SSLLogger.isOn("ssl,sslctx")) {
+                    if (SSLLogger.isOn() &&
+                            SSLLogger.isOn(SSLLogger.Opt.SSLCTX)) {
                         SSLLogger.fine(
                                 "The current installed providers do not " +
                                 "support cipher suite: " + cipherSuiteNames[i]);
@@ -917,7 +920,8 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                 tmMediator = getTrustManagers();
             } catch (Exception e) {
                 reserved = e;
-                if (SSLLogger.isOn() && SSLLogger.isOn("ssl,defaultctx")) {
+                if (SSLLogger.isOn() &&
+                        SSLLogger.isOn(SSLLogger.Opt.DEFAULTCTX)) {
                     SSLLogger.warning(
                             "Failed to load default trust managers", e);
                 }
@@ -929,7 +933,8 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                     kmMediator = getKeyManagers();
                 } catch (Exception e) {
                     reserved = e;
-                    if (SSLLogger.isOn() && SSLLogger.isOn("ssl,defaultctx")) {
+                    if (SSLLogger.isOn() &&
+                            SSLLogger.isOn(SSLLogger.Opt.DEFAULTCTX)) {
                         SSLLogger.warning(
                                 "Failed to load default key managers", e);
                     }
@@ -987,7 +992,7 @@ public abstract class SSLContextImpl extends SSLContextSpi {
             String defaultKeyStore = props.get("keyStore");
             String defaultKeyStoreType = props.get("keyStoreType");
             String defaultKeyStoreProvider = props.get("keyStoreProvider");
-            if (SSLLogger.isOn() && SSLLogger.isOn("ssl,defaultctx")) {
+            if (SSLLogger.isOn() && SSLLogger.isOn(SSLLogger.Opt.DEFAULTCTX)) {
                 SSLLogger.fine("keyStore is : " + defaultKeyStore);
                 SSLLogger.fine("keyStore type is : " +
                                         defaultKeyStoreType);
@@ -1017,7 +1022,8 @@ public abstract class SSLContextImpl extends SSLContextSpi {
 
                 // Try to initialize key store.
                 if ((defaultKeyStoreType.length()) != 0) {
-                    if (SSLLogger.isOn() && SSLLogger.isOn("ssl,defaultctx")) {
+                    if (SSLLogger.isOn() &&
+                            SSLLogger.isOn(SSLLogger.Opt.DEFAULTCTX)) {
                         SSLLogger.finest("init keystore");
                     }
                     if (defaultKeyStoreProvider.isEmpty()) {
@@ -1040,7 +1046,7 @@ public abstract class SSLContextImpl extends SSLContextSpi {
             /*
              * Try to initialize key manager.
              */
-            if (SSLLogger.isOn() && SSLLogger.isOn("ssl,defaultctx")) {
+            if (SSLLogger.isOn() && SSLLogger.isOn(SSLLogger.Opt.DEFAULTCTX)) {
                 SSLLogger.fine("init keymanager of type " +
                     KeyManagerFactory.getDefaultAlgorithm());
             }
@@ -1078,7 +1084,8 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                     // exception object, which may be not garbage collection
                     // friendly as 'reservedException' is a static filed.
                     reserved = new KeyManagementException(e.getMessage());
-                    if (SSLLogger.isOn() && SSLLogger.isOn("ssl,defaultctx")) {
+                    if (SSLLogger.isOn() &&
+                            SSLLogger.isOn(SSLLogger.Opt.DEFAULTCTX)) {
                         SSLLogger.warning(
                                 "Failed to load default SSLContext", e);
                     }
@@ -1107,7 +1114,8 @@ public abstract class SSLContextImpl extends SSLContextSpi {
                 super.engineInit(DefaultManagersHolder.keyManagers,
                         DefaultManagersHolder.trustManagers, null);
             } catch (Exception e) {
-                if (SSLLogger.isOn() && SSLLogger.isOn("ssl,defaultctx")) {
+                if (SSLLogger.isOn() &&
+                        SSLLogger.isOn(SSLLogger.Opt.DEFAULTCTX)) {
                     SSLLogger.fine("default context init failed: ", e);
                 }
                 throw e;
