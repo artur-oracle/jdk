@@ -78,7 +78,7 @@ enum CompressionAlgorithm {
     static Map<Integer, Function<byte[], byte[]>> findInflaters(
             SSLConfiguration config) {
         if (config.certInflaters == null || config.certInflaters.isEmpty()) {
-            if (SSLLogger.isOn() && SSLLogger.isOn("ssl,handshake")) {
+            if (SSLLogger.isOn() && SSLLogger.isOn(SSLLogger.Opt.HANDSHAKE)) {
                 SSLLogger.finest(
                         "No supported certificate compression algorithms");
             }
@@ -93,7 +93,8 @@ enum CompressionAlgorithm {
             CompressionAlgorithm ca =
                     CompressionAlgorithm.nameOf(entry.getKey());
             if (ca == null) {
-                if (SSLLogger.isOn() && SSLLogger.isOn("ssl,handshake")) {
+                if (SSLLogger.isOn()
+                        && SSLLogger.isOn(SSLLogger.Opt.HANDSHAKE)) {
                     SSLLogger.finest("Ignore unsupported certificate " +
                             "compression algorithm: " + entry.getKey());
                 }
@@ -148,7 +149,8 @@ enum CompressionAlgorithm {
 
                 return outputStream.toByteArray();
             } catch (Exception e) {
-                if (SSLLogger.isOn() && SSLLogger.isOn("ssl,handshake")) {
+                if (SSLLogger.isOn()
+                        && SSLLogger.isOn(SSLLogger.Opt.HANDSHAKE)) {
                     SSLLogger.warning("Exception during certificate "
                             + "compression: ", e);
                 }
@@ -173,7 +175,8 @@ enum CompressionAlgorithm {
 
                 return outputStream.toByteArray();
             } catch (Exception e) {
-                if (SSLLogger.isOn() && SSLLogger.isOn("ssl,handshake")) {
+                if (SSLLogger.isOn()
+                        && SSLLogger.isOn(SSLLogger.Opt.HANDSHAKE)) {
                     SSLLogger.warning(
                             "Exception during certificate decompression: ", e);
                 }
