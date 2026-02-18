@@ -966,8 +966,9 @@ public class SSLParameters {
      * Sets whether TLS certificate compression should be enabled.
      * This method only applies to TLSv1.3.
      *
-     * @apiNote The peer must support compress_certificate extension and
-     * compression format in order for certificate compression to work.
+     * @apiNote The peer must support the compress_certificate extension and
+     * one of the compression algorithms in order for the certificate chain
+     * to be compressed.
      *
      * @implNote The SunJSSE provider only supports zlib compression.
      * Other JSSE providers may not support this method.
