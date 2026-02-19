@@ -171,6 +171,22 @@ enum CompressionAlgorithm {
                 while (!inflater.finished()) {
                     int decompressedSize = inflater.inflate(buffer);
                     outputStream.write(buffer, 0, decompressedSize);
+
+                    // Bound the memory usage.
+                    if (outputStream.size()
+                            > SSLConfiguration.maxHandshakeMessageSize) {
+                        if (SSLLogger.isOn()
+                                && SSLLogger.isOn(SSLLogger.Opt.HANDSHAKE)) {
+                            SSLLogger.warning("The size of the "
+                                    + "uncompressed certificate message "
+                                    + "exceeds maximum allowed size of "
+                                    + SSLConfiguration.maxHandshakeMessageSize
+                                    + " bytes; compressed size: "
+                                    + input.length);
+                        }
+
+                        return null;
+                    }
                 }
 
                 return outputStream.toByteArray();

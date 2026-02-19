@@ -57,13 +57,18 @@ import jdk.test.lib.security.CertificateBuilder;
 
 public class CompressedCertMsgCache extends SSLSocketTemplate {
 
-    private static X509Certificate trustedCert;
-    private static X509Certificate serverCert;
-    private static X509Certificate clientCert;
-    private static KeyPair serverKeys;
-    private static KeyPair clientKeys;
-    private static SSLContext serverSslContext;
-    private static SSLContext clientSslContext;
+    protected static String clientCertSubjectName =
+            "CN=localhost, OU=SSL-Client, ST=Some-State, C=US";
+    protected static String serverCertSubjectName =
+            "O=Some-Org, L=Some-City, ST=Some-State, C=US";
+
+    protected static X509Certificate trustedCert;
+    protected static X509Certificate serverCert;
+    protected static X509Certificate clientCert;
+    protected static KeyPair serverKeys;
+    protected static KeyPair clientKeys;
+    protected static SSLContext serverSslContext;
+    protected static SSLContext clientSslContext;
 
     public static void main(String[] args) throws Exception {
 
@@ -106,7 +111,7 @@ public class CompressedCertMsgCache extends SSLSocketTemplate {
         return clientSslContext;
     }
 
-    private static SSLContext getSSLContext(
+    protected static SSLContext getSSLContext(
             X509Certificate trustedCertificate, X509Certificate keyCertificate,
             PrivateKey privateKey, String protocol)
             throws Exception {
@@ -143,7 +148,7 @@ public class CompressedCertMsgCache extends SSLSocketTemplate {
 
     // Certificate-building helper methods.
 
-    private static void setupCertificates() throws Exception {
+    protected static void setupCertificates() throws Exception {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC");
         KeyPair caKeys = kpg.generateKeyPair();
         serverKeys = kpg.generateKeyPair();
@@ -152,13 +157,13 @@ public class CompressedCertMsgCache extends SSLSocketTemplate {
         trustedCert = createTrustedCert(caKeys);
 
         serverCert = customCertificateBuilder(
-                "O=Some-Org, L=Some-City, ST=Some-State, C=US",
+                serverCertSubjectName,
                 serverKeys.getPublic(), caKeys.getPublic())
                 .addBasicConstraintsExt(false, false, -1)
                 .build(trustedCert, caKeys.getPrivate(), "SHA256withECDSA");
 
         clientCert = customCertificateBuilder(
-                "CN=localhost, OU=SSL-Client, ST=Some-State, C=US",
+                clientCertSubjectName,
                 clientKeys.getPublic(), caKeys.getPublic())
                 .addBasicConstraintsExt(false, false, -1)
                 .build(trustedCert, caKeys.getPrivate(), "SHA256withECDSA");
